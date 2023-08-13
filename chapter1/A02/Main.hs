@@ -1,8 +1,17 @@
-judge :: [Int] -> IO ()
-judge [] = putStrLn "No"
-judge _ = putStrLn "Yes"
+import Control.Monad
+import Data.Maybe
+import qualified Data.ByteString.Char8 as BS
+
+readInt :: BS.ByteString -> Int
+readInt = fst . fromJust . BS.readInt
+
+readIntList :: BS.ByteString -> [Int]
+readIntList = map readInt . BS.words
+
+getInts :: IO [Int]
+getInts = readIntList <$> BS.getLine
 
 main = do
-    [n, x] <- map read . words <$> getLine :: IO [Int]
-    numList <- map read . words <$> getLine :: IO [Int]
-    judge $ filter (== x) numList
+    [n, x] <- getInts
+    numList <- getInts
+    if x `elem` numList then putStrLn "Yes" else putStrLn "No"

@@ -8,11 +8,17 @@ readIntList = map readInt . BS.words
 getInts :: IO [Int]
 getInts = readIntList <$> BS.getLine
 
-search :: Int -> Int -> [Int] -> Int
-search target n [] = -1
-search target n (x:xs) = if target == x then n - length xs else search target n xs
+binarySearch :: Int -> Int -> [Int] -> Int
+binarySearch target offset [] = offset
+binarySearch target offset [x] = if target == x then offset + 1 else -1
+binarySearch target offset xs =
+    let (left, right) = splitAt (length xs `div` 2) xs
+        in case compare target (head right) of
+            EQ -> offset + length left + 1
+            LT -> binarySearch target offset left
+            GT -> binarySearch target (offset + length left) right
 
 main = do
     [n, x] <- getInts
     xs <- getInts
-    print $ search x n xs
+    print $ binarySearch x 0 xs
